@@ -95,7 +95,7 @@ bin/pulsar-admin topics list public/default
 Pulsar默认创建持久化主题，在非持久化主题中，服务端收到消息后会直接转发给当前的所有消费者。非持久化主题的地址以non-persistent开头，例如non-persistent://tenant/namespace/topic
 
 ## 2.3 生产者
-![生产者与服务端关系图](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/生产者与服务端关系图.jpg "生产者与服务端关系图")
+![生产者与服务端关系图](src/main/resources/static/生产者与服务端关系图.jpg "生产者与服务端关系图")
 1. 一对一
 - 由服务端处理该生产者的所有消息发送请求
 2. 一对多
@@ -107,37 +107,37 @@ Pulsar默认创建持久化主题，在非持久化主题中，服务端收到�
 - 独占等待模式：独占等待模式仅有一个生产者可以发送消息至服务端。在新建生产者时，如果对应服务端已经连接了其他生产者，则生产者新建进程将被挂起，直到生产者获得独占访问权限。
 
 ## 2.4 消费者与订阅
-![消费者与订阅](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/Pulsar中的消费者与订阅.jpg)
+![消费者与订阅](src/main/resources/static/Pulsar中的消费者与订阅.jpg)
 ## 2.4.1 订阅
 默认情况下Pulsar提供的是持久化订阅，使用同一个订阅的消费者会在服务端存储消费的位置，并在重启后在上次消费的位置继续消费消息。在客户端，用户可以选择非持久化订阅模式。消费者在使用非持久化订阅模式时，若是退出消费，则当前订阅会被服务端释放，且不会存储本次消费的位置。
 
 ### 2.4.1.1 独占模式
-![独占模式](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/独占模式.jpg)
+![独占模式](src/main/resources/static/独占模式.jpg)
 
 每个订阅只允许一个消费者接入。若订阅的主题是多分区主题，消费者也会独占多个分区。独占模式是Pulsar默认的订阅模式。
 
 ### 2.4.1.2 故障转移模式
-![故障转移模式](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/故障转移模式.jpg)
+![故障转移模式](src/main/resources/static/故障转移模式.jpg)
 
 Pulsar会为非分区主题或分区主题的每个分区选择一个主消费者并接收其消息。当主消费者断开连接时，所有消息都会传递给下一个消费者。对于分区主题，服务端将根据优先级和消费者的名称在字典中的顺序对消费者进行排序。然后，服务端会尝试将主题均匀分配给具有最高优先级的消费者。对于非分区主题，服务端将按照消费者订阅非分区主题的顺序选择消费者。
 
 ### 2.4.1.3 共享模式
-![共享模式](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/共享模式.jpg)
+![共享模式](src/main/resources/static/共享模式.jpg)
 
 消息以循环分配的方式在消费者之间传递，并且任何给定的消息都只传递给一个消费者。当消费者断开连接时，所有发送给它但未被确认的消息将被重新安排发送给剩余的消费者。在这种模式下，由于消息发送具有随机性，所以多个消费者之间不能保证消息有序。
 
 ### 2.4.1.3 键共享模式
-![键共享模式](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/键共享模式.jpg)
+![键共享模式](src/main/resources/static/键共享模式.jpg)
 
 消息可以在多个消费者中传递，具有相同键的消息仅会被传递给一个消费者。在使用键共享模式时，必须为消息指定一个键。
 
 ### 2.4.1.4 传统发布订阅模式
-![发布-订阅模式](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/发布-订阅模式.jpg)
+![发布-订阅模式](src/main/resources/static/发布-订阅模式.jpg)
 
 应为每个消费者指定唯一的订阅名称，并使用独占模式。在这种配置下，每个消费者都会消费全量的Pulsar主题消息
 
 ### 2.4.1.5 队列模式
-![队列模式](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/队列模式.jpg)
+![队列模式](src/main/resources/static/队列模式.jpg)
 
 在多个消费者之间共享相同的订阅名称，此时多个消费者可共同消费一份全量消息
 
@@ -147,10 +147,10 @@ Pulsar会为非分区主题或分区主题的每个分区选择一个主消费�
 bin/pulsar-client consume topic-test -s "subscription_test" --subscription-position Earliest
 ```
 -s参数指定了当前使用的订阅的名称，这里为subscription_test。如果此订阅名从未被使用过，则服务端会创建一个新订阅。如果此订阅被使用过，则服务端会从上次消费的位置开始继续消费消息。参数--subscription-position代表该订阅在第一次被使用时需要初始化的位置。Earliest表示消费位置应该被初始化为主题中能消费的最早一条消息所在的位置。Latest表示消费位置应该被初始化为主题中最后一条消息的位置,如下图
-![消费的位置和初始化的位置](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/消费位置.jpg)
+![消费的位置和初始化的位置](src/main/resources/static/消费位置.jpg)
 
 ### 2.4.2.2 消息保留与消息过期
-![消息保留策略与消息过期策略](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/消息保留策略与消息过期策略.jpg)
+![消息保留策略与消息过期策略](src/main/resources/static/消息保留策略与消息过期策略.jpg)
 
 （消息已过期和未过期反了？？？）
 
@@ -158,7 +158,7 @@ bin/pulsar-client consume topic-test -s "subscription_test" --subscription-posit
 
 ## 2.5 Pulsar逻辑架构
 ### 2.5.1 主题的配置管理
-![租户、命名空间与主题](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/租户、命名空间与主题.jpg)
+![租户、命名空间与主题](src/main/resources/static/租户、命名空间与主题.jpg)
 
 租户、命名空间与主题之间关系如上图所示。
 
@@ -167,30 +167,30 @@ bin/pulsar-client consume topic-test -s "subscription_test" --subscription-posit
 资源隔离机制允许用户为命名空间分配资源，包括计算节点Broker和存储节点Bookie。pulsar-admin管理工具提供了ns-isolation-policy命令，该命令可以为命名空间分配Broker节点，并限制可用于分配的Broker。pulsar-admin管理工具的namespaces命令中的set-bookie-affinity-group子命令提供了Bookie节点的分配策略，该策略可以保证所有属于该命名空间的数据都存储在所需的Bookie节点中。
 
 ### 2.5.2 主题的数据流转
-![生产者消息写入流程图](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/生产者消息写入流程图.jpg)
+![生产者消息写入流程图](src/main/resources/static/生产者消息写入流程图.jpg)
 
 用户将消息写入Pulsar时，客户端请求会被发送到管理该主题的Broker节点上，然后Broker节点会负责将消息写入Bookie节点中的某个Ledger中，在写入成功后Broker节点会将成功写入的状态返回给客户端
 
-![消费者消息读取流程图](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/消费者消息读取流程图.jpg)
+![消费者消息读取流程图](src/main/resources/static/消费者消息读取流程图.jpg)
 
 在消费消息时，Pulsar会先尝试从Broker节点的缓存中读取消息，如果不能命中消息，则会从Bookie节点中读取消息，并最终将消息发送给消费者
 
 ### 2.5.3 主题的数据存储
-![主题与Ledger的存储关系](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/主题与Ledger的存储关系.jpg)
+![主题与Ledger的存储关系](src/main/resources/static/主题与Ledger的存储关系.jpg)
 
 主题的数据在逻辑上被分解为多个片段（Segment）。片段在BookKeeper集群中对应着物理概念上的最小的分布单元—Ledger。每个Ledger都是一个独立的日志文件，一个主题中多个Ledger不会同时提供写入功能，同一时刻只会有一个Ledger处于开放状态并提供数据写入功能。Ledger在Pulsar中是最小的删除单元，因此我们不能删除单条记录，只能删除整个Ledger。
 
-![消息的组成示意](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/消息的组成示意.jpg)
+![消息的组成示意](src/main/resources/static/消息的组成示意.jpg)
 
 每一条消息都会包含分区序号（partition-index）、Ledger序号（ledger-id）、Entry序号（entry-id）以及批内序号（batch-index）等信息，这些信息用来唯一确定一条消息
 
 ## 2.6 Pulsar物理架构
 ### 2.6.1 集群与实例
-![Pulsar实例与Pulsar集群的关系](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/Pulsar实例与Pulsar集群的关系.jpg)
+![Pulsar实例与Pulsar集群的关系](src/main/resources/static/Pulsar实例与Pulsar集群的关系.jpg)
 
 实例代表一个或多个Pulsar集群的集合。实例中的集群之间可以相互复制数据，实现跨区域的数据备份。一个实例内的多个集群依赖Zookeeper集群实现彼此之间的协调任务，例如异地复制。
 ### 2.6.2 分层存储架构
-![分层存储架构](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/分层存储架构.jpg)
+![分层存储架构](src/main/resources/static/分层存储架构.jpg)
 
 Pulsar的分层存储功能允许将较旧的积压数据卸载到可长期存储的系统中，例如Hadoop HDFS或Amazon S3。分层存储卸载（Offload）机制利用了这种面向数据段的架构。当请求卸载时，日志的数据段被一个一个地复制到分层存储系统中。命名空间策略可以配置为在达到阈值后自动卸载数据至分层存储系统中。一旦主题中的数据达到阈值，就会触发卸载操作。
 ### 2.6.3 核心组件与服务
@@ -201,7 +201,7 @@ Pulsar的分层存储功能允许将较旧的积压数据卸载到可长期存�
 - 消息队列的生产与消费的基本功能。生产者可以连接到Broker节点发布消息，消费者可以连接到Broker节点来消费消息，在读取消息时如果能在Broker节点的缓存中命中消息，则直接从缓存中读取消息
 - 以REST API的形式提供HTTP服务。Broker节点可以为租户和命名空间提供管理功能，为主题提供服务发现功能，为生产者和消费者提供管理接口，还可以为用户提供针对Pulsar Function、Pulsar I/O的管理功能。
 3.  BookKeeper与Bookie：通过分布式预写日志实现的数据存储组件
-![BookKeeper基本架构图](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/BookKeeper基本架构图.jpg)
+![BookKeeper基本架构图](src/main/resources/static/BookKeeper基本架构图.jpg)
     
   在BookKeeper中除了Ledger外，还有日记账（Journal）、内存表（Memtable）、账目日志（Entry Log）、索引缓存（IndexCache）等概念
 
@@ -225,7 +225,7 @@ Pulsar的分层存储功能允许将较旧的积压数据卸载到可长期存�
 - 属性：
   这是一个由用户自定义的属性集合。生产者可以在发送消息的同时附带一系列属性。这些属性可以在消费者中被访问。
 
-![消息流转的流程图](/Users/mac/code/learn/pulsar-learn/src/main/resources/static/消息流转的流程图.jpg)
+![消息流转的流程图](src/main/resources/static/消息流转的流程图.jpg)
 #### 3.1.2 消息流转流程：
 1. 原始数据结合模式信息、元数据信息变成Pulsar中的消息。如果在生产者端配置了拦截器，则消息会被处理，而被处理后的消息也会被生产者端得到。
 2. 根据生产者端的配置决定消息的发送形式。发送形式包括单条发送、分批发送（将多条消息打包为一条消息）、分块发送（将一条消息拆分为多条消息发送）。
